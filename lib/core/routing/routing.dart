@@ -1,0 +1,25 @@
+
+import 'package:flutter/material.dart';
+
+import '../../features/account/presentation/views/account_details_view.dart';
+import '../../features/auth/presentation/views/sign_up_view.dart';
+import '../../features/main/presntation/views/main_view.dart';
+import '../../features/auth/presentation/views/sign_in_view.dart';
+import '../../features/auth/presentation/views/verf_code_view.dart';
+
+Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+  switch (settings.name) {
+    case SignInView.routename:
+      return MaterialPageRoute(builder: (_) => const SignInView());
+    case SignUpView.routename:
+      return MaterialPageRoute(builder: (_) => const SignUpView());
+    case VerfCodeView.routename:
+      return MaterialPageRoute(builder: (_) => const VerfCodeView());
+    case MainView.routename:
+      return MaterialPageRoute(builder: (_) => const MainView());
+      case AccountDetailsView.routename:
+      return MaterialPageRoute(builder: (_) => const AccountDetailsView());
+    default:
+      return MaterialPageRoute(builder: (context) => Scaffold());
+  }
+}
