@@ -14,21 +14,19 @@ class CustomNavBar extends StatelessWidget {
         context.read<NavBarCubit>().changeIndex(index);
       },
       items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
-          label: "Home",
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
         BottomNavigationBarItem(
           icon: Icon(Icons.people_outline),
           label: "Account",
         ),
+
         BottomNavigationBarItem(
-          icon: Icon(Icons.arrow_outward_sharp),
-          label: "التحويلات",
+          icon: Icon(Icons.send_rounded),
+          label: "Transactions",
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings_outlined),
-          label: "الإعدادات",
+          icon: Icon(Icons.comment_bank_outlined),
+          label: "Chat",
         ),
       ],
     );

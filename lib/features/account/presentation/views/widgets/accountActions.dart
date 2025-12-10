@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:se3/core/utils/show_question_dialog.dart';
+import 'package:se3/features/transaction/presntaion/views/widgets/withdraw_transaction_screen.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
@@ -72,6 +73,24 @@ class AccountActions extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              side: BorderSide(color: AppColors.primary),
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, WithdrawTransactionScreen.routename);
+              // افتح ScheduledPaymentsScreen
+            },
+            child: Text("Withdraw to card", style: AppTextStyles.bodyMedium),
+          ),
         ),
         const SizedBox(height: 10),
         SizedBox(

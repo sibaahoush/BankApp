@@ -6,6 +6,9 @@ import '../../features/auth/presentation/views/sign_up_view.dart';
 import '../../features/main/presntation/views/main_view.dart';
 import '../../features/auth/presentation/views/sign_in_view.dart';
 import '../../features/auth/presentation/views/verf_code_view.dart';
+import '../../features/transaction/presntaion/views/widgets/NewScheduledPayment.dart';
+import '../../features/transaction/presntaion/views/widgets/NewTransaction.dart';
+import '../../features/transaction/presntaion/views/widgets/withdraw_transaction_screen.dart';
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -19,6 +22,13 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const MainView());
       case AccountDetailsView.routename:
       return MaterialPageRoute(builder: (_) => const AccountDetailsView());
+       case NewTransactionScreen.routename:
+      return MaterialPageRoute(builder: (_) => const NewTransactionScreen());
+       case NewScheduledPaymentScreen.routename:
+      return MaterialPageRoute(builder: (_) => const NewScheduledPaymentScreen());
+       case WithdrawTransactionScreen.routename:
+      return MaterialPageRoute(builder: (_) => const WithdrawTransactionScreen());
+
     default:
       return MaterialPageRoute(builder: (context) => Scaffold());
   }
