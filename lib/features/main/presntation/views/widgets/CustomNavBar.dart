@@ -28,6 +28,10 @@ class CustomNavBar extends StatelessWidget {
           icon: Icon(Icons.comment_bank_outlined),
           label: "Chat",
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.comment_bank_outlined),
+          label: "Ticket",
+        ),
       ],
     );
   }

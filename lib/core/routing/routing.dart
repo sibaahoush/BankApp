@@ -6,6 +6,8 @@ import '../../features/auth/presentation/views/sign_up_view.dart';
 import '../../features/main/presntation/views/main_view.dart';
 import '../../features/auth/presentation/views/sign_in_view.dart';
 import '../../features/auth/presentation/views/verf_code_view.dart';
+import '../../features/ticket/presentation/views/widgets/NewTicketScreen.dart';
+import '../../features/ticket/presentation/views/widgets/TicketDetailsScreen.dart';
 import '../../features/transaction/presntaion/views/widgets/NewScheduledPayment.dart';
 import '../../features/transaction/presntaion/views/widgets/NewTransaction.dart';
 import '../../features/transaction/presntaion/views/widgets/withdraw_transaction_screen.dart';
@@ -28,6 +30,10 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const NewScheduledPaymentScreen());
        case WithdrawTransactionScreen.routename:
       return MaterialPageRoute(builder: (_) => const WithdrawTransactionScreen());
+ case TicketDetailsScreen.routename:
+      return MaterialPageRoute(builder: (_) => const TicketDetailsScreen());
+ case NewTicketScreen.routename:
+      return MaterialPageRoute(builder: (_) => const NewTicketScreen());
 
     default:
       return MaterialPageRoute(builder: (context) => Scaffold());
