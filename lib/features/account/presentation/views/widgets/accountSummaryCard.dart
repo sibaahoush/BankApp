@@ -15,10 +15,10 @@ class AccountSummaryCard extends StatelessWidget {
   });
 
   Color _statusColor() {
-    switch (status) {
-      case "Frozen":
+    switch (status.toLowerCase()) {
+      case "frozen":
         return AppColors.warning;
-      case "Closed":
+      case "closed":
         return AppColors.error;
       default:
         return AppColors.success;
@@ -104,7 +104,7 @@ class AccountSummaryCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          status,
+                          status.toUpperCase(),
                           style: AppTextStyles.bodySmall.copyWith(
                             color: _statusColor(),
                             fontWeight: FontWeight.w500,

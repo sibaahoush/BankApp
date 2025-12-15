@@ -20,11 +20,18 @@ class CreateSubAccountButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          showCreateSubAccountBottomSheet(context);
+          showCreateSubAccountBottomSheet(context, parentAccountId: null);
         },
-        child: Text(
-          "Create Sub-account",
-          style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, color: Colors.white),
+            SizedBox(width: 8),
+            Text(
+              "Create New Account",
+              style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
+            ),
+          ],
         ),
       ),
     );

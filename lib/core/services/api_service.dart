@@ -1,111 +1,71 @@
+import 'package:dio/dio.dart';
+import 'package:se3/core/services/local_storage_service.dart';
+import '../utils/backend_endpoints.dart';
 
-// import 'package:dio/dio.dart';
-// import 'package:se3/core/utils/token_storage.dart';
-// import '../utils/backend_endpoints.dart';
-// import 'database_service.dart';
+class ApiService {
+  final Dio dio;
 
-// class ApiService implements DatabaseService {
-//   final Dio dio;
+  ApiService()
+      : dio = Dio(
+          BaseOptions(
+            baseUrl: BackendEndPoint.url,
+            connectTimeout: const Duration(seconds: 30),
+            receiveTimeout: const Duration(seconds: 30),
+          ),
+        ) {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await LocalStorageService.getItem(LocalStorageKeys.token);
 
-//   ApiService()
-//     : dio = Dio(
-//         BaseOptions(
-//           baseUrl: BackendEndPoint.url,
-//           connectTimeout: const Duration(seconds: 30),
-//           receiveTimeout: const Duration(seconds: 30),
-//         ),
-//       ) {
-//     dio.interceptors.add(
-//       InterceptorsWrapper(
-//         onRequest: (options, handler) async {
-//           final accessToken = await TokenStorage().readAccess();
-//           final p = options.path;
+          final isAuthCall = options.path.contains(BackendEndPoint.signIn) ||
+              options.path.contains(BackendEndPoint.signUp) ||
+              options.path.contains(BackendEndPoint.verifyOtp) ||
+              options.path.contains(BackendEndPoint.resendOtp);
 
-//           final isAuthCall =
-//               p.contains(BackendEndPoint.signIn) ||
-//               p.contains(BackendEndPoint.signUp);
+          if (!isAuthCall && token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
 
-//           if (!isAuthCall &&
-//               accessToken != null &&
-//               accessToken.isNotEmpty &&
-//               options.headers['Authorization'] == null) {
-//             options.headers['Authorization'] = 'Bearer $accessToken';
-//           }
+          options.headers['Accept'] = 'application/json';
+          handler.next(options);
+        },
+        onError: (DioException err, handler) async {
+          if (err.response?.statusCode == 401) {
+            await LocalStorageService.removeItem(LocalStorageKeys.token);
+            await LocalStorageService.removeItem(LocalStorageKeys.user);
+          }
+          handler.next(err);
+        },
+      ),
+    );
+  }
 
-//           handler.next(options);
-//         },
-//         onError: (DioException err, handler) async {
-//           if (err.response?.statusCode == 401 &&
-//               !err.requestOptions.path.contains(BackendEndPoint.signIn) &&
-//               !err.requestOptions.path.contains(BackendEndPoint.signUp)) {
-//             try {
-//               final tokenStorage = TokenStorage();
-//               final oldToken = await tokenStorage.readAccess();
+  Future<Response> post({
+    required String endpoint,
+    required Map<String, dynamic> data,
+  }) async {
+    final formData = FormData.fromMap(data);
+    return await dio.post(endpoint, data: data);
+  }
 
-//               if (oldToken == null) {
-//                 return handler.next(err);
-//               }
-//               AuthRepo authRepo = AuthRepoImp(
-//                 databaseService: getIt.get<DatabaseService>(),
-//               );
-//               final result = await authRepo.refresh();
-//               result.fold(
-//                 (failure) {
-//                   throw Exception(failure);
-//                 },
-//                 (newToken) async {
-//                   final reqOptions = err.requestOptions;
-//                   reqOptions.headers['Authorization'] = 'Bearer $newToken';
-//                   final cloneResponse = await dio.fetch(reqOptions);
-//                   return handler.resolve(cloneResponse);
-//                 },
-//               );
-//             } catch (e) {
-//               return handler.next(err);
-//             }
-//           }
-//           handler.next(err);
-//         },
-//       ),
-//     );
-//   }
+  Future<Response> get({
+    required String endpoint,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    return await dio.get(endpoint, queryParameters: queryParameters);
+  }
 
-//   @override
-//   Future addData({
-//     required String endpoint,
-//     required Map<String, dynamic> data,
-//     String? rowid,
-//   }) async {
-//     final Response res = await dio.post(endpoint + (rowid ?? ''), data: data);
-//     return res.data;
-//   }
+  Future<Response> put({
+    required String endpoint,
+    required Map<String, dynamic> data,
+  }) async {
+    return await dio.put(endpoint, data: data);
+  }
 
-//   @override
-//   Future getData({
-//     required String endpoint,
-//     String? rowid,
-//     Map<String, dynamic>? quary,
-//   }) async {
-//     final Response res = await dio.get(
-//       endpoint + (rowid ?? ''),
-//       queryParameters: quary,
-//     );
-//     return res.data;
-//   }
-
-//   @override
-//   Future deleteData({required String endpoint, String? rowid}) async {
-//     final Response res = await dio.delete(endpoint + (rowid ?? ''));
-//     return res.data;
-//   }
-
-//   @override
-//   Future updateData({
-//     required String endpoint,
-//     String? rowid,
-//     dynamic data,
-//   }) async {
-//     final Response res = await dio.put(endpoint + (rowid ?? ''), data: data);
-//     return res.data;
-//   }
-// }
+  Future<Response> delete({
+    required String endpoint,
+  }) async {
+    return await dio.delete(endpoint);
+  }
+}

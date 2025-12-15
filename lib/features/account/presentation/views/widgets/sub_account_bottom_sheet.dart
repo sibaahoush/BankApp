@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:se3/core/controllers/app_data_controller.dart';
+import 'package:se3/features/account/presentation/controllers/account_controller.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 
-void showCreateSubAccountBottomSheet(BuildContext context) {
-  final nameController = TextEditingController();
-  final balanceController = TextEditingController(); // حقل الرصيد
-  String? selectedType;
+void showCreateSubAccountBottomSheet(BuildContext context, {int? parentAccountId}) {
+  final balanceController = TextEditingController();
+  final AppDataController appDataController = Get.find<AppDataController>();
+  final AccountController accountController = Get.find<AccountController>();
 
-  final types = ["Child account", "Business account", "Savings sub-account"];
+  int? selectedTypeId;
 
   showModalBottomSheet(
     context: context,
@@ -44,52 +47,14 @@ void showCreateSubAccountBottomSheet(BuildContext context) {
                 ),
                 const SizedBox(height: 16),
 
-                Text("Create sub-account", style: AppTextStyles.titleMedium),
-                const SizedBox(height: 12),
-
-                // اسم الحساب الفرعي
-                Text("Sub-account name", style: AppTextStyles.labelSmall),
-                const SizedBox(height: 4),
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    hintText: "e.g. Travel savings",
-                    hintStyle: AppTextStyles.bodySmall,
-                    filled: true,
-                    fillColor: AppColors.form,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+                Text(
+                  parentAccountId != null ? "Create Sub-Account" : "Create New Account",
+                  style: AppTextStyles.titleMedium,
                 ),
                 const SizedBox(height: 12),
 
-                // الرصيد الابتدائي
-                Text("Initial balance", style: AppTextStyles.labelSmall),
-                const SizedBox(height: 4),
-                TextField(
-                  controller: balanceController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: "e.g. 250.00",
-                    hintStyle: AppTextStyles.bodySmall,
-                    prefixText: "\$ ",
-                    prefixStyle: AppTextStyles.bodySmall,
-                    filled: true,
-                    fillColor: AppColors.form,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // نوع الحساب الفرعي
-                Text("Type", style: AppTextStyles.labelSmall),
+                // Account Type
+                Text("Account Type", style: AppTextStyles.labelSmall),
                 const SizedBox(height: 4),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -101,57 +66,108 @@ void showCreateSubAccountBottomSheet(BuildContext context) {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedType,
-                      hint: Text("Select type", style: AppTextStyles.bodySmall),
+                    child: DropdownButton<int>(
+                      value: selectedTypeId,
+                      hint: Text("Select account type", style: AppTextStyles.bodySmall),
                       isExpanded: true,
-                      items:
-                          types
-                              .map(
-                                (t) => DropdownMenuItem(
-                                  value: t,
-                                  child: Text(
-                                    t,
-                                    style: AppTextStyles.bodySmall,
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                      items: appDataController.accountTypes
+                          .map(
+                            (type) => DropdownMenuItem(
+                              value: type.id,
+                              child: Text(
+                                type.name.toUpperCase(),
+                                style: AppTextStyles.bodySmall,
+                              ),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
                         setState(() {
-                          selectedType = value;
+                          selectedTypeId = value;
                         });
                       },
                     ),
                   ),
                 ),
+                const SizedBox(height: 12),
 
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final name = nameController.text.trim();
-                      final balanceText = balanceController.text.trim();
-
-                      if (name.isEmpty ||
-                          balanceText.isEmpty ||
-                          selectedType == null) {
-                        return;
-                      }
-
-                      final balance = double.tryParse(balanceText) ?? 0;
-
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      "Create",
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white,
-                      ),
+                // Initial Balance
+                Text("Initial Balance", style: AppTextStyles.labelSmall),
+                const SizedBox(height: 4),
+                TextField(
+                  controller: balanceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: "e.g. 100.00",
+                    hintStyle: AppTextStyles.bodySmall,
+                    prefixText: "\$ ",
+                    prefixStyle: AppTextStyles.bodySmall,
+                    filled: true,
+                    fillColor: AppColors.form,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 20),
+                Obx(() => SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: accountController.isCreating.value
+                            ? null
+                            : () {
+                                final balanceText = balanceController.text.trim();
+
+                                if (balanceText.isEmpty || selectedTypeId == null) {
+                                  Get.snackbar(
+                                    'Error',
+                                    'Please fill all fields',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+
+                                final balance = double.tryParse(balanceText);
+                                if (balance == null || balance < 0) {
+                                  Get.snackbar(
+                                    'Error',
+                                    'Please enter a valid balance',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+
+                                accountController.createAccount(
+                                  typeId: selectedTypeId!,
+                                  balance: balance,
+                                  accountRelatedId: parentAccountId,
+                                );
+                              },
+                        child: accountController.isCreating.value
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : Text(
+                                "Create Account",
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    )),
               ],
             );
           },

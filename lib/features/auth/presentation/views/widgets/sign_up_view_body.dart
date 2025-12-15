@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:se3/features/auth/presentation/views/verf_code_view.dart';
+import 'package:get/get.dart';
+import 'package:se3/features/auth/presentation/controllers/auth_controller.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/utils/app_images.dart';
@@ -15,6 +16,21 @@ class SignUpViewBody extends StatefulWidget {
 
 class _SignUpViewBodyState extends State<SignUpViewBody> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final AuthController _authController = Get.put(AuthController());
+
+  void _handleSignUp() {
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      final formData = _formKey.currentState!.value;
+      _authController.signUp(
+        name: formData['name'],
+        phone: formData[' Phone number'],
+        email: formData['email'],
+        password: formData['password'],
+        passwordConfirmation: formData['password_confirmation'],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -37,15 +53,22 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
           ),
           SizedBox(height: 16),
           SignUpTextFieldSection(formKey: _formKey),
-          SizedBox(
-            width: 200,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, VerfCodeView.routename);
-              },
-              child: const Text('SignUp'),
-            ),
-          ),
+          Obx(() => SizedBox(
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: _authController.isLoading.value ? null : _handleSignUp,
+                  child: _authController.isLoading.value
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('SignUp'),
+                ),
+              )),
           SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

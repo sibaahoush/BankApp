@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get/get.dart';
+import 'package:se3/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:se3/features/auth/presentation/views/sign_up_view.dart';
-import 'package:se3/features/main/presntation/views/main_view.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/utils/app_images.dart';
@@ -16,6 +17,17 @@ class SignInViewBody extends StatefulWidget {
 
 class _SignInViewBodyState extends State<SignInViewBody> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final AuthController _authController = Get.put(AuthController());
+
+  void _handleSignIn() {
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      final formData = _formKey.currentState!.value;
+      _authController.signIn(
+        email: formData['email'],
+        password: formData['password'],
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +66,22 @@ class _SignInViewBodyState extends State<SignInViewBody> {
               ),
             ),
           ),
-          SizedBox(
-            width: 200,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, MainView.routename);
-              },
-              child: const Text('SignIn'),
-            ),
-          ),
+          Obx(() => SizedBox(
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: _authController.isLoading.value ? null : _handleSignIn,
+                  child: _authController.isLoading.value
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('SignIn'),
+                ),
+              )),
           SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

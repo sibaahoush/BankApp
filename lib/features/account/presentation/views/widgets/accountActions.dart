@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:se3/core/utils/show_question_dialog.dart';
+import 'package:se3/features/account/presentation/controllers/account_controller.dart';
 import 'package:se3/features/transaction/presntaion/views/widgets/withdraw_transaction_screen.dart';
 
 import '../../../../../core/theme/app_colors.dart';
@@ -8,10 +10,13 @@ import 'showEditAccountBottomSheet.dart';
 import 'sub_account_bottom_sheet.dart';
 
 class AccountActions extends StatelessWidget {
-  const AccountActions();
+  final int accountId;
+
+  const AccountActions({super.key, required this.accountId});
 
   @override
   Widget build(BuildContext context) {
+    final AccountController accountController = Get.find<AccountController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,9 +71,10 @@ class AccountActions extends StatelessWidget {
                     context: context,
                     title: "Close account",
                     description: "Are you sure you want to close this account?",
-                    btnOkOnPress: () {},
+                    btnOkOnPress: () {
+                      accountController.closeAccount(accountId);
+                    },
                   );
-                  // TODO: Close logic
                 },
               ),
             ),
@@ -86,8 +92,10 @@ class AccountActions extends StatelessWidget {
               side: BorderSide(color: AppColors.primary),
             ),
             onPressed: () {
-              Navigator.pushNamed(context, WithdrawTransactionScreen.routename);
-              // افتح ScheduledPaymentsScreen
+              Navigator.pushNamed(
+                context,
+                WithdrawTransactionScreen.routename,
+              );
             },
             child: Text("Withdraw to card", style: AppTextStyles.bodyMedium),
           ),
@@ -109,7 +117,7 @@ class AccountActions extends StatelessWidget {
               style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
             ),
             onPressed: () {
-              showCreateSubAccountBottomSheet(context);
+              showCreateSubAccountBottomSheet(context, parentAccountId: accountId);
             },
           ),
         ),

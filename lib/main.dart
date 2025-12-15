@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:se3/core/theme/App_themes.dart';
+import 'package:se3/features/splash/splash_view.dart';
 
 import 'core/routing/routing.dart';
-import 'features/auth/presentation/views/sign_in_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,13 +15,12 @@ class BankManagmentApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      // home: Text('data'),
       onGenerateRoute: onGenerateRoute,
-      initialRoute: SignInView.routename,
+      initialRoute: SplashView.routename,
     );
   }
 }

@@ -1,37 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:se3/features/account/presentation/controllers/account_controller.dart';
 import 'package:se3/features/account/presentation/views/widgets/RecentTransactionsSection.dart';
 import 'package:se3/features/account/presentation/views/widgets/accountActions.dart';
 import 'package:se3/features/account/presentation/views/widgets/subAccountsSection.dart';
 
 import 'accountSummaryCard.dart';
 
-class AccountDetailsViewBody extends StatelessWidget {
+class AccountDetailsViewBody extends StatefulWidget {
   const AccountDetailsViewBody({super.key});
 
   @override
+  State<AccountDetailsViewBody> createState() => _AccountDetailsViewBodyState();
+}
+
+class _AccountDetailsViewBodyState extends State<AccountDetailsViewBody> {
+  final AccountController controller = Get.find<AccountController>();
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Only load once
+    if (!_isInitialized) {
+      _isInitialized = true;
+
+      // Get account ID from navigation arguments
+      final arguments = ModalRoute.of(context)?.settings.arguments;
+      final accountId = arguments as int?;
+      if (accountId != null) {
+        controller.getAccountTree(accountId);
+        controller.loadTransactionsForAccount(accountId);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final double balance = 6120.00;
-    final String iban = "AE34 1020 0000 3456 7890";
-    final String status = "Active"; // Active / Frozen / Closed
-    return SingleChildScrollView(
+    return Obx(() {
+      if (controller.isLoadingDetails.value) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+
+      final account = controller.selectedAccount.value;
+      if (account == null) {
+        return const Center(
+          child: Text('Account not found'),
+        );
+      }
+
+      return SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AccountSummaryCard(
-              balance: balance,
-              iban: iban,
-              status: status,
+              balance: account.balance,
+              iban: account.number,
+              status: account.status,
             ),
             const SizedBox(height: 20),
-            const AccountActions(),
+            AccountActions(accountId: account.id),
             const SizedBox(height: 24),
-            const SubAccountsSection(),
+            SubAccountsSection(subAccounts: account.children),
             const SizedBox(height: 24),
-            const RecentTransactionsSection(),
+            RecentTransactionsSection(accountId: account.id),
           ],
         ),
-      
-    );
+      );
+    });
   }
 }
