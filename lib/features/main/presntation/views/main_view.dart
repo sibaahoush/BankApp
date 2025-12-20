@@ -23,7 +23,7 @@ class MainView extends StatelessWidget {
             //   child: const Icon(Icons.add),
             // ),
             appBar: AppBar(
-              title: Text(["Home", "Accounts", "Chat", "Transactions",'Tickets'][state]),
+              title: Text(["Home", "Accounts", "Transactions", "Chat",'Tickets'][state]),
             ),
             bottomNavigationBar: CustomNavBar(),
             body:
@@ -32,7 +32,7 @@ class MainView extends StatelessWidget {
                   AccountView(),
                   TransactionView(),
                   ChatbotView(),
-                      TicketView(),
+                  TicketView(),
                 ][state],
           );
         },

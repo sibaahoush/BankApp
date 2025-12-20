@@ -21,66 +21,7 @@ class AccountActions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Actions", style: AppTextStyles.titleMedium),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _OutlinedActionButton(
-                label: "Freeze account",
-                color: Colors.blue,
-                icon: Icons.ac_unit_rounded,
-                onPressed: () {
-                  showQuestionDialog(
-                    context: context,
-                    title: "Freeze account",
-                    description:
-                        "Are you sure you want to freeze this account?",
-                    btnOkOnPress: () {},
-                  );
-                  // TODO: Freeze logic
-                },
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: _OutlinedActionButton(
-                  label: "Edit account",
-                  color: AppColors.warning,
-                  icon: Icons.edit,
-                  onPressed: () {
-                    showEditAccountBottomSheet(
-                      context,
-                      initialName: "Savings Account",
-                      initialStatus: "Active",
-                      initialDescription: "My main savings account",
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _OutlinedActionButton(
-                label: "Close account",
-                color: AppColors.error,
-                icon: Icons.close_rounded,
-                onPressed: () {
-                  showQuestionDialog(
-                    context: context,
-                    title: "Close account",
-                    description: "Are you sure you want to close this account?",
-                    btnOkOnPress: () {
-                      accountController.closeAccount(accountId);
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
@@ -100,7 +41,7 @@ class AccountActions extends StatelessWidget {
             child: Text("Withdraw to card", style: AppTextStyles.bodyMedium),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 0),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -120,6 +61,65 @@ class AccountActions extends StatelessWidget {
               showCreateSubAccountBottomSheet(context, parentAccountId: accountId);
             },
           ),
+        ),
+        const SizedBox(height: 0),
+        Row(
+          children: [
+            // Expanded(
+            //   child: _OutlinedActionButton(
+            //     label: "Freeze account",
+            //     color: Colors.blue,
+            //     icon: Icons.ac_unit_rounded,
+            //     onPressed: () {
+            //       showQuestionDialog(
+            //         context: context,
+            //         title: "Freeze account",
+            //         description:
+            //             "Are you sure you want to freeze this account?",
+            //         btnOkOnPress: () {},
+            //       );
+            //       // TODO: Freeze logic
+            //     },
+            //   ),
+            // ),
+            // const SizedBox(width: 10),
+            // Expanded(
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(4.0),
+            //     child: _OutlinedActionButton(
+            //       label: "Edit account",
+            //       color: AppColors.warning,
+            //       icon: Icons.edit,
+            //       onPressed: () {
+            //         showEditAccountBottomSheet(
+            //           context,
+            //           initialName: "Savings Account",
+            //           initialStatus: "Active",
+            //           initialDescription: "My main savings account",
+            //         );
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(width: 10),
+            Expanded(
+              child: _OutlinedActionButton(
+                label: "Close account",
+                color: AppColors.error,
+                icon: Icons.close_rounded,
+                onPressed: () {
+                  showQuestionDialog(
+                    context: context,
+                    title: "Close account",
+                    description: "Are you sure you want to close this account?",
+                    btnOkOnPress: () {
+                      accountController.closeAccount(accountId);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ],
     );

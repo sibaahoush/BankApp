@@ -66,14 +66,14 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                 }
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: theme.inputDecorationTheme.fillColor,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFFE5E7EB),
-                    ),
-                  ),
+                  // padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  // decoration: BoxDecoration(
+                  //   color: theme.inputDecorationTheme.fillColor,
+                  //   borderRadius: BorderRadius.circular(10),
+                  //   border: Border.all(
+                  //     color: const Color(0xFFE5E7EB),
+                  //   ),
+                  // ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButtonFormField<String>(
                       value: selectedAccountNumber,

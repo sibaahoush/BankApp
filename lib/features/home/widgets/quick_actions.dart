@@ -27,7 +27,7 @@ class QuickActions extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _QuickActionItem(
               icon: Icons.send_rounded,
@@ -44,11 +44,11 @@ class QuickActions extends StatelessWidget {
               label: "Withdraw",
               onTap: onWithdraw,
             ),
-            _QuickActionItem(
-              icon: Icons.qr_code_scanner_rounded,
-              label: "Scan",
-              onTap: onScanOrPay,
-            ),
+            // _QuickActionItem(
+            //   icon: Icons.qr_code_scanner_rounded,
+            //   label: "Scan",
+            //   onTap: onScanOrPay,
+            // ),
           ],
         ),
       ],

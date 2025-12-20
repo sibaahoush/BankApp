@@ -32,8 +32,8 @@ class TransactionFilters extends StatelessWidget {
             isSelected: controller.transactionFilter.value == 'withdraw',
             onTap: () => controller.setTransactionFilter('withdraw'),
           )),
-          const Spacer(),
-          const Icon(Icons.calendar_month_outlined),
+          // const Spacer(),
+          // const Icon(Icons.calendar_month_outlined),
         ],
       ),
     );
